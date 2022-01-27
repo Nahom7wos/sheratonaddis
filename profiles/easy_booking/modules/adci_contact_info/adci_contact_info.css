@@ -1,0 +1,19 @@
+.adci-contact-info {
+  margin: 10px 0;
+}
+
+.adci-contact-info * {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.adci-contact-info label {
+  float: left;
+  margin-right: 5px;
+  font-weight: normal;
+}
+
+.adci-contact-info h3 {
+  font-size: 13px;
+  font-weight: bold;
+}

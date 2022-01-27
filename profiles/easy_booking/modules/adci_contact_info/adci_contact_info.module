@@ -1,0 +1,216 @@
+<?php
+
+/**
+ * @file
+ * Info, view, save functions for ADCI Solutions contact info block.
+ */
+
+/**
+ * Implements hook_block_info().
+ */
+function adci_contact_info_block_info() {
+  $blocks['adci_contact_info_block'] = array(
+    'info' => t('ADCI Solutions contact information'),
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function adci_contact_info_block_view($delta = '') {
+  if ($delta !== 'adci_contact_info_block' || !user_access('administer site configuration')) {
+    return;
+  }
+
+  $block['content']['info'] = [
+    '#type' => 'html_tag',
+    '#tag' => 'p',
+    '#value' => str_replace('@version', VERSION, variable_get('adci_contact_info_info', 'The website is using Drupal @version')),
+  ];
+
+  $block['content']['site'] = [
+    '#type' => 'container',
+  ];
+  $block['content']['site']['title'] = [
+    '#type' => 'html_tag',
+    '#tag' => 'label',
+    '#value' => variable_get('adci_contact_info_site_title', 'Supported by'),
+  ];
+  $block['content']['site']['link']  = [
+    '#theme' => 'link',
+    '#text' => variable_get('adci_contact_info_site_text', 'ADCI Solutions'),
+    '#path' => variable_get('adci_contact_info_site_link', 'https://www.adcisolutions.com/'),
+    '#options' => array(
+      'attributes' => array(
+        'target' => '_blank',
+        'rel' => 'noopener noreferrer',
+      ),
+      'html' => FALSE,
+    ),
+  ];
+
+  $block['content']['email'] = [
+    '#type' => 'container',
+  ];
+  $block['content']['email']['title'] = [
+    '#type' => 'html_tag',
+    '#tag' => 'label',
+    '#value' => variable_get('adci_contact_info_email_title', 'Email'),
+  ];
+  $block['content']['email']['email'] = [
+    '#type' => 'html_tag',
+    '#tag' => 'a',
+    '#value' => variable_get('adci_contact_info_email', 'hello@adcillc.com'),
+    '#attributes' => [
+      'href' => 'mailto:' . variable_get('adci_contact_info_email', 'hello@adcillc.com'),
+    ],
+  ];
+
+  $requirements = module_invoke_all('requirements', 'runtime');
+  $severities = [];
+
+  foreach ($requirements as $requirement) {
+    if (isset($requirement['severity'])) {
+      if (isset($severities[$requirement['severity']])) {
+        $severities[(int) $requirement['severity']]++;
+        continue;
+      }
+      $severities += [(int) $requirement['severity'] => 1];
+    }
+  }
+
+  $listItems = [];
+  $link = '<a href="/admin/reports/status">@text</a>';
+
+  if (isset($severities['2'])) {
+    $text = format_plural($severities['2'], '1 error', '@count errors');
+    $listItems[] = str_replace('@text', $text, $link);
+  }
+
+  if (isset($severities['1'])) {
+    $text = format_plural($severities['1'], '1 warning', '@count warnings');
+    $listItems[] = str_replace('@text', $text, $link);
+  }
+
+  if (count($listItems) > 0) {
+    $block['content']['errors'] = [
+      '#theme' => 'item_list',
+      '#list_type' => 'ul',
+      '#title' => t('Your website requires your attention:'),
+      '#items' => $listItems,
+    ];
+  }
+
+  $block['content']['#attached'] = [
+    'css' => array(
+      drupal_get_path('module', 'adci_contact_info') . '/adci_contact_info.css',
+    ),
+  ];
+
+  return $block;
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function adci_contact_info_block_configure($delta = '') {
+  if ($delta !== 'adci_contact_info_block') {
+    return;
+  }
+
+  $form['info'] = [
+    '#type' => 'textarea',
+    '#title' => t('Information'),
+    '#default_value' => variable_get('adci_contact_info_info', 'The website is using Drupal @version'),
+    '#description' => t('You can use @version placeholder to print the version of Drupal core.'),
+  ];
+  $form['site'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Site link'),
+  ];
+  $form['site']['link'] = [
+    '#type' => 'textfield',
+    '#title' => t('Link'),
+    '#default_value' => variable_get('adci_contact_info_site_link', 'https://www.adcisolutions.com/'),
+    '#attributes' => [
+      'id' => 'adci-info-block-site-link',
+    ],
+  ];
+  $form['site']['text'] = [
+    '#type' => 'textfield',
+    '#title' => t('Link text'),
+    '#default_value' =>  variable_get('adci_contact_info_site_text', 'ADCI Solutions'),
+    '#states' => [
+      'disabled' => [
+        ':input[id="adci-info-block-site-link"]' => [
+          'empty' => TRUE,
+        ],
+      ],
+    ],
+  ];
+  $form['site']['site_title'] = [
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#default_value' =>  variable_get('adci_contact_info_site_title', 'Supported by'),
+    '#states' => [
+      'disabled' => [
+        ':input[id="adci-info-block-site-link"]' => [
+          'empty' => TRUE,
+        ],
+      ],
+    ],
+  ];
+  $form['email'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Email'),
+  ];
+  $form['email']['email'] = [
+    '#type' => 'textfield',
+    '#title' => t('Email'),
+    '#default_value' => variable_get('adci_contact_info_email', 'hello@adcillc.com'),
+    '#attributes' => [
+      'id' => 'adci-info-block-email-email',
+      'type' => 'email',
+    ],
+  ];
+  $form['email']['email_title'] = [
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#default_value' => variable_get('adci_contact_info_email_title', 'Email'),
+    '#states' => [
+      'disabled' => [
+        ':input[id="adci-info-block-email-email"]' => [
+          'empty' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  return $form;
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function adci_contact_info_block_save($delta = '', $edit = array()) {
+  if ($delta !== 'adci_contact_info_block') {
+    return;
+  }
+
+  variable_set('adci_contact_info_info', $edit['info']);
+  variable_set('adci_contact_info_site_link', $edit['link']);
+  variable_set('adci_contact_info_site_title', $edit['site_title']);
+  variable_set('adci_contact_info_site_text', $edit['text']);
+  variable_set('adci_contact_info_email', $edit['email']);
+  variable_set('adci_contact_info_email_title', $edit['email_title']);
+}
+
+/**
+ * Implements hook_preprocess_block().
+ */
+function adci_contact_info_preprocess_block(&$variables) {
+  if ($variables['block']->delta === 'adci_contact_info_block') {
+    $variables['classes_array'][] = 'adci-contact-info';
+  }
+}

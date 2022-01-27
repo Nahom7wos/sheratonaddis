@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the ADCI Contact Info module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function adci_contact_info_uninstall() {
+  variable_del('adci_contact_info_info');
+  variable_del('adci_contact_info_site_link');
+  variable_del('adci_contact_info_site_title');
+  variable_del('adci_contact_info_site_text');
+  variable_del('adci_contact_info_email');
+  variable_del('adci_contact_info_email_title');
+}

@@ -1,0 +1,11 @@
+name = ADCI Solutions contact information
+description = Shows ADCI Solutions contact information on administrative pages for users with administrative permissions.
+package = Custom
+core = 7.x
+dependencies[] = block
+
+; Information added by Drupal.org packaging script on 2021-09-06
+version = "7.x-2.11"
+core = "7.x"
+project = "easy_booking"
+datestamp = "1630921310"

@@ -1,0 +1,25 @@
+name = BAT - Booking and Availability Management Tools
+description = A generic booking framework for building booking applications
+core = 7.x
+php = 5.3.9
+
+package = BAT
+
+dependencies[] = date
+dependencies[] = date_api
+dependencies[] = date_popup
+dependencies[] = jquery_update
+dependencies[] = libraries (>=2.x)
+dependencies[] = xautoload (>=5.x)
+
+; Information added by Drupal.org packaging script on 2019-07-12
+version = "7.x-1.37"
+core = "7.x"
+project = "bat"
+datestamp = "1562971397"
+
+; Information added by Drupal.org packaging script on 2021-09-06
+version = "7.x-2.11"
+core = "7.x"
+project = "easy_booking"
+datestamp = "1630921310"

@@ -1,0 +1,23 @@
+name = BAT Booking Example
+description = BAT Booking Example
+core = 7.x
+
+package = BAT
+
+dependencies[] = bat_booking
+dependencies[] = bat_facets
+
+files[] = views/bat_booking_example.views.inc
+files[] = views/bat_booking_example_book_this_field.inc
+
+; Information added by Drupal.org packaging script on 2019-07-12
+version = "7.x-1.37"
+core = "7.x"
+project = "bat"
+datestamp = "1562971397"
+
+; Information added by Drupal.org packaging script on 2021-09-06
+version = "7.x-2.11"
+core = "7.x"
+project = "easy_booking"
+datestamp = "1630921310"
